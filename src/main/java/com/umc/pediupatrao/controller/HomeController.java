@@ -26,7 +26,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import com.umc.pediupatrao.entity.RegistroAuditoria;
+import com.umc.pediupatrao.service.AuditoriaService;
+import org.springframework.data.domain.Page;
 /**
  * Controlador das telas (Thymeleaf). As regras de negócio ficam nos serviços; aqui as
  * violações (RegraNegocioException) viram mensagens de erro para o usuário. O acesso por
@@ -36,18 +38,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class HomeController {
 
     private static final Logger log = LoggerFactory.getLogger(HomeController.class);
-
+    private final AuditoriaService auditoriaService;
     private final PedidoService pedidoService;
     private final ClienteService clienteService;
     private final ProdutoService produtoService;
     private final UsuarioService usuarioService;
 
     public HomeController(PedidoService pedidoService, ClienteService clienteService,
-                          ProdutoService produtoService, UsuarioService usuarioService) {
+                          ProdutoService produtoService, UsuarioService usuarioService, AuditoriaService auditoriaService) {
         this.pedidoService = pedidoService;
         this.clienteService = clienteService;
         this.produtoService = produtoService;
         this.usuarioService = usuarioService;
+        this.auditoriaService = auditoriaService;
     }
 
     @GetMapping("/login")
@@ -293,7 +296,26 @@ public class HomeController {
         }
         return "redirect:/clientes";
     }
-
+    // ========================
+    // AUDITORIA (ADMIN e GERENTE, somente leitura)
+    // ========================
+    @GetMapping("/auditoria")
+    public String auditoria(@RequestParam(required = false) String entidade,
+                            @RequestParam(required = false) String entidadeId,
+                            @RequestParam(required = false) String usuario,
+                            @RequestParam(defaultValue = "0") int pagina,
+                            Model model) {
+        Page<RegistroAuditoria> p = auditoriaService.consultar(entidade, entidadeId, usuario, pagina, 30);
+        model.addAttribute("registros", p.getContent());
+        model.addAttribute("pagina", p.getNumber());
+        model.addAttribute("totalPaginas", p.getTotalPages());
+        model.addAttribute("total", p.getTotalElements());
+        model.addAttribute("fEntidade", entidade);
+        model.addAttribute("fEntidadeId", entidadeId);
+        model.addAttribute("fUsuario", usuario);
+        model.addAttribute("content", "auditoria :: content");
+        return "layout";
+    }
     // ========================
     // OUTRAS ROTAS
     // ========================
