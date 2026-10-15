@@ -1,5 +1,7 @@
 package com.umc.pediupatrao.controller;
 
+import com.umc.pediupatrao.dto.ItemRequest;
+import com.umc.pediupatrao.dto.PedidoRequest;
 import com.umc.pediupatrao.entity.Cliente;
 import com.umc.pediupatrao.entity.Pedido;
 import com.umc.pediupatrao.entity.Produto;
@@ -9,8 +11,11 @@ import com.umc.pediupatrao.service.ClienteService;
 import com.umc.pediupatrao.service.PedidoService;
 import com.umc.pediupatrao.service.ProdutoService;
 import com.umc.pediupatrao.service.UsuarioService;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -132,10 +137,90 @@ public class HomeController {
     // ========================
     @GetMapping("/pedidos")
     public String pedidos(Model model) {
-        List<Pedido> pedidos = pedidoService.listarPedidos();
-        model.addAttribute("pedidos", pedidos);
+        Map<String, String> nomesClientes = new HashMap<>();
+        for (Cliente c : clienteService.listarClientes()) {
+            nomesClientes.put(c.getId(), c.getNome());
+        }
+        List<PedidoView> views = new ArrayList<>();
+        for (Pedido p : pedidoService.listarPedidos()) {
+            views.add(new PedidoView(p, nomesClientes.getOrDefault(p.getClienteId(), "(cliente removido)")));
+        }
+        List<Produto> ativos = new ArrayList<>();
+        for (Produto p : produtoService.listarProdutos()) {
+            if (Boolean.TRUE.equals(p.getAtivo())) {
+                ativos.add(p);
+            }
+        }
+        List<Cliente> clientes = clienteService.listarClientes();
+        clientes.sort((a, b) -> String.valueOf(a.getNome()).compareToIgnoreCase(String.valueOf(b.getNome())));
+
+        model.addAttribute("pedidos", views);
+        model.addAttribute("produtos", ativos);
+        model.addAttribute("clientes", clientes);
         model.addAttribute("content", "pedidos :: content");
         return "layout";
+    }
+
+    @PostMapping("/pedidos/novo")
+    public String novoPedido(@RequestParam String clienteId,
+                             @RequestParam(required = false) List<String> produtoId,
+                             @RequestParam(required = false) List<Integer> quantidade,
+                             @RequestParam(required = false) String observacao,
+                             RedirectAttributes redirectAttributes) {
+        try {
+            List<ItemRequest> itens = new ArrayList<>();
+            if (produtoId != null) {
+                for (int i = 0; i < produtoId.size(); i++) {
+                    Integer qtd = quantidade != null && i < quantidade.size() ? quantidade.get(i) : null;
+                    itens.add(new ItemRequest(produtoId.get(i), qtd));
+                }
+            }
+            Pedido salvo = pedidoService.criarPedido(new PedidoRequest(clienteId, itens, observacao));
+            redirectAttributes.addFlashAttribute("sucesso", "Pedido registrado! Total: R$ " + salvo.getValorTotal());
+        } catch (RegraNegocioException e) {
+            redirectAttributes.addFlashAttribute("erro", e.getMessage());
+        }
+        return "redirect:/pedidos";
+    }
+
+    @PostMapping("/pedidos/{id}/status")
+    public String alterarStatus(@PathVariable String id, @RequestParam String status,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            Pedido p = pedidoService.atualizarStatus(id, status);
+            redirectAttributes.addFlashAttribute("sucesso", "Status atualizado para " + p.getStatus().getDescricao() + ".");
+        } catch (RegraNegocioException e) {
+            redirectAttributes.addFlashAttribute("erro", e.getMessage());
+        }
+        return "redirect:/pedidos";
+    }
+
+    @PostMapping("/pedidos/{id}/desconto")
+    public String aplicarDesconto(@PathVariable String id, @RequestParam String percentual,
+                                  RedirectAttributes redirectAttributes) {
+        try {
+            BigDecimal valor = new BigDecimal(percentual.trim().replace(',', '.'));
+            Pedido p = pedidoService.aplicarDesconto(id, valor);
+            redirectAttributes.addFlashAttribute("sucesso",
+                    "Desconto aplicado. Novo total: R$ " + p.getValorTotal());
+        } catch (NumberFormatException e) {
+            redirectAttributes.addFlashAttribute("erro", "Percentual de desconto inválido.");
+        } catch (RegraNegocioException e) {
+            redirectAttributes.addFlashAttribute("erro", e.getMessage());
+        }
+        return "redirect:/pedidos";
+    }
+
+    @PostMapping("/pedidos/{id}/cancelar")
+    public String cancelarPedido(@PathVariable String id, @RequestParam(required = false) String justificativa,
+                                 RedirectAttributes redirectAttributes) {
+        try {
+            pedidoService.cancelar(id, justificativa);
+            redirectAttributes.addFlashAttribute("sucesso", "Pedido cancelado.");
+        } catch (RegraNegocioException e) {
+            redirectAttributes.addFlashAttribute("erro", e.getMessage());
+        }
+        return "redirect:/pedidos";
     }
 
     // ========================

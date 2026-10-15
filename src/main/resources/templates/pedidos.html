@@ -11,6 +11,10 @@
         <h2 class="fw-bold mb-0">
             <i class="bi bi-bag me-2 text-primary"></i>Pedidos
         </h2>
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#novoPedido"
+                th:if="${ehGerente or ehAtendente}">
+            <i class="bi bi-plus-lg me-1"></i> Novo Pedido
+        </button>
     </div>
 
     <!-- Mensagens de feedback -->
@@ -25,51 +29,189 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 
+    <!-- Formulário de novo pedido (ATENDENTE e GERENTE). O total é calculado no servidor. -->
+    <div class="collapse mb-4" id="novoPedido" th:if="${ehGerente or ehAtendente}">
+        <div class="card card-body shadow-sm">
+            <form th:action="@{/pedidos/novo}" method="post">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="clienteId" class="form-label fw-medium">Cliente</label>
+                        <select id="clienteId" name="clienteId" class="form-select" required>
+                            <option value="" disabled selected>Selecione o cliente</option>
+                            <option th:each="c : ${clientes}" th:value="${c.id}"
+                                    th:text="${c.nome} + ' — ' + ${c.telefone}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="observacao" class="form-label fw-medium">Observação</label>
+                        <input type="text" id="observacao" name="observacao" class="form-control" maxlength="200"
+                               placeholder="Ex: sem cebola"/>
+                    </div>
+                </div>
+
+                <label class="form-label fw-medium">Itens</label>
+                <div id="itens-pedido"></div>
+                <button type="button" class="btn btn-outline-secondary btn-sm mb-3" id="btnAddItem">
+                    <i class="bi bi-plus"></i> Adicionar item
+                </button>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-lg me-1"></i>Registrar pedido
+                    </button>
+                </div>
+                <p class="text-muted small mt-2 mb-0">
+                    Preços e total são calculados pelo sistema a partir do cadastro de produtos.
+                </p>
+            </form>
+
+            <!-- Modelo de linha de item (clonado pelo JavaScript) -->
+            <template id="modelo-item">
+                <div class="row g-2 mb-2 item-linha">
+                    <div class="col-8">
+                        <select name="produtoId" class="form-select" required>
+                            <option value="" disabled selected>Produto</option>
+                            <option th:each="p : ${produtos}" th:value="${p.id}"
+                                    th:text="${p.nome} + ' — R$ ' + ${#numbers.formatDecimal(p.preco, 1, 'POINT', 2, 'COMMA')}"></option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <input type="number" name="quantidade" class="form-control" min="1" max="100" value="1" required/>
+                    </div>
+                    <div class="col-1">
+                        <button type="button" class="btn btn-outline-danger btn-remover" title="Remover item">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+
     <!-- Tabela -->
     <div class="card shadow-sm">
         <div class="card-body p-0">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-dark">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
                     <tr>
-                        <th class="ps-4">ID</th>
-                        <th>Cliente ID</th>
-                        <th>Tipo de Pizza</th>
-                        <th>Sabor</th>
-                        <th>Quantidade</th>
+                        <th class="ps-4">Pedido</th>
+                        <th>Cliente</th>
+                        <th>Itens</th>
+                        <th>Valores</th>
                         <th>Status</th>
+                        <th>Entrada</th>
+                        <th>Saída</th>
+                        <th th:if="${ehGerente}">Ações (Gerente)</th>
                     </tr>
-                </thead>
-                <tbody>
-                    <!-- Lista vazia -->
+                    </thead>
+                    <tbody>
                     <tr th:if="${#lists.isEmpty(pedidos)}">
-                        <td colspan="6" class="text-center text-muted py-5">
+                        <td colspan="8" class="text-center text-muted py-5">
                             <i class="bi bi-inbox fs-3 d-block mb-2"></i>
                             Nenhum pedido encontrado.
                         </td>
                     </tr>
-                    <!-- Linhas -->
-                    <tr th:each="pedido : ${pedidos}">
-                        <td class="ps-4 text-muted" th:text="${pedido.id}"></td>
-                        <td th:text="${pedido.clienteId}"></td>
-                        <td th:text="${pedido.tipoPizza}"></td>
-                        <td th:text="${pedido.sabor}"></td>
-                        <td th:text="${pedido.quantidade}"></td>
+                    <tr th:each="v : ${pedidos}">
+                        <td class="ps-4 text-muted small" th:text="${#strings.abbreviate(v.pedido.id, 10)}"></td>
+                        <td th:text="${v.clienteNome}"></td>
+                        <td class="small">
+                            <div th:each="item : ${v.pedido.itens}"
+                                 th:text="${item.quantidade} + 'x ' + ${item.nomeProduto}"></div>
+                            <div th:if="${#lists.isEmpty(v.pedido.itens) and v.pedido.tipoPizza != null}"
+                                 class="text-muted"
+                                 th:text="${v.pedido.quantidade} + 'x ' + ${v.pedido.tipoPizza} + ' ' + ${v.pedido.sabor} + ' (legado)'"></div>
+                            <div class="text-muted fst-italic" th:if="${v.pedido.observacao != null}"
+                                 th:text="${v.pedido.observacao}"></div>
+                        </td>
+                        <td class="small text-nowrap">
+                            <div th:if="${v.pedido.valorTotal != null}">
+                                Subtotal: R$ <span th:text="${#numbers.formatDecimal(v.pedido.subtotal, 1, 'POINT', 2, 'COMMA')}"></span>
+                            </div>
+                            <div th:if="${v.pedido.valorDesconto != null and v.pedido.valorDesconto.signum() > 0}" class="text-success">
+                                Desconto (<span th:text="${v.pedido.descontoPercentual}"></span>%):
+                                − R$ <span th:text="${#numbers.formatDecimal(v.pedido.valorDesconto, 1, 'POINT', 2, 'COMMA')}"></span>
+                            </div>
+                            <div class="fw-bold" th:if="${v.pedido.valorTotal != null}">
+                                Total: R$ <span th:text="${#numbers.formatDecimal(v.pedido.valorTotal, 1, 'POINT', 2, 'COMMA')}"></span>
+                            </div>
+                        </td>
                         <td>
-                            <span class="badge"
-                                  th:classappend="${pedido.status == 'ENTREGUE'} ? 'bg-success' :
-                                                  (${pedido.status == 'CANCELADO'} ? 'bg-danger' :
-                                                  (${pedido.status == 'EM_PREPARO'} ? 'bg-warning text-dark' : 'bg-secondary'))"
-                                  th:text="${pedido.status}">
+                            <span class="badge" th:classappend="${v.badgeClasse}"
+                                  th:text="${v.pedido.status != null} ? ${v.pedido.status.descricao} : '—'">
                             </span>
+                            <div class="small text-danger mt-1" th:if="${v.pedido.motivoCancelamento != null}">
+                                <strong>Cancelado por <span th:text="${v.pedido.canceladoPor}"></span>:</strong>
+                                <span th:text="${v.pedido.motivoCancelamento}"></span>
+                            </div>
+                        </td>
+                        <td class="small text-nowrap">
+                            <div th:text="${#temporals.format(v.pedido.dataHoraEntrada, 'dd/MM/yyyy HH:mm')}"></div>
+                            <div class="text-muted" th:if="${v.pedido.responsavelRegistro != null}"
+                                 th:text="'por ' + ${v.pedido.responsavelRegistro}"></div>
+                        </td>
+                        <td class="small text-nowrap">
+                            <div th:if="${v.pedido.dataHoraSaida != null}"
+                                 th:text="${#temporals.format(v.pedido.dataHoraSaida, 'dd/MM/yyyy HH:mm')}"></div>
+                            <div class="text-muted" th:if="${v.pedido.responsavelSaida != null}"
+                                 th:text="'por ' + ${v.pedido.responsavelSaida}"></div>
+                        </td>
+                        <td th:if="${ehGerente}" style="min-width: 220px;">
+                            <!-- Avançar no fluxo -->
+                            <form th:each="prox : ${v.proximos}" th:action="@{/pedidos/{id}/status(id=${v.pedido.id})}"
+                                  method="post" class="d-inline">
+                                <input type="hidden" name="status" th:value="${prox.name()}"/>
+                                <button type="submit" class="btn btn-sm btn-outline-primary mb-1"
+                                        th:text="'→ ' + ${prox.descricao}"></button>
+                            </form>
+                            <!-- Desconto e cancelamento: somente antes da saída -->
+                            <details th:if="${v.antesDaSaida}" class="mb-1">
+                                <summary class="small text-success">Aplicar desconto</summary>
+                                <form th:action="@{/pedidos/{id}/desconto(id=${v.pedido.id})}" method="post"
+                                      class="input-group input-group-sm mt-1">
+                                    <input type="number" name="percentual" class="form-control" min="0.01" max="20"
+                                           step="0.01" placeholder="% (máx. 20)" required/>
+                                    <button class="btn btn-success" type="submit">Aplicar</button>
+                                </form>
+                            </details>
+                            <details th:if="${v.antesDaSaida}">
+                                <summary class="small text-danger">Cancelar pedido</summary>
+                                <form th:action="@{/pedidos/{id}/cancelar(id=${v.pedido.id})}" method="post" class="mt-1">
+                                    <textarea name="justificativa" class="form-control form-control-sm mb-1" rows="2"
+                                              minlength="5" maxlength="300" placeholder="Justificativa (obrigatória)"
+                                              required></textarea>
+                                    <button class="btn btn-sm btn-danger" type="submit">Confirmar cancelamento</button>
+                                </form>
+                            </details>
                         </td>
                     </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div class="card-footer text-muted small" th:if="${!#lists.isEmpty(pedidos)}">
             Total: <strong th:text="${#lists.size(pedidos)}"></strong> pedido(s)
         </div>
     </div>
+
+    <script>
+        (function () {
+            const container = document.getElementById('itens-pedido');
+            const modelo = document.getElementById('modelo-item');
+            const botao = document.getElementById('btnAddItem');
+            if (!container || !modelo || !botao) return;
+
+            function adicionarItem() {
+                const linha = modelo.content.firstElementChild.cloneNode(true);
+                linha.querySelector('.btn-remover').addEventListener('click', function () {
+                    if (container.children.length > 1) linha.remove();
+                });
+                container.appendChild(linha);
+            }
+            botao.addEventListener('click', adicionarItem);
+            adicionarItem();
+        })();
+    </script>
 
 </div>
 
