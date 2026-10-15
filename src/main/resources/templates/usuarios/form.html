@@ -35,7 +35,9 @@
                            class="form-control"
                            th:field="*{username}"
                            placeholder="Ex: joao.silva"
+                           th:readonly="${usuario.id != null}"
                            required/>
+                    <small class="text-muted" th:if="${usuario.id != null}">O username não pode ser alterado.</small>
                 </div>
 
                 <!-- Senha -->
@@ -52,7 +54,7 @@
                                class="form-control"
                                th:field="*{password}"
                                placeholder="••••••••"
-                               th:required="${usuario.id == null}"/>
+                               th:required="${usuario.id == null}" minlength="6" autocomplete="new-password"/>
                         <button type="button" class="btn btn-outline-secondary" id="togglePassword">
                             <i class="bi bi-eye" id="eyeIcon"></i>
                         </button>
@@ -64,11 +66,18 @@
                     <label for="role" class="form-label fw-medium">
                         <i class="bi bi-shield me-1"></i>Perfil
                     </label>
-                    <select id="role" class="form-select" th:field="*{role}" required>
+                    <!-- Ao editar a própria conta o perfil fica bloqueado (o backend também impede a autoelevação) -->
+                    <select id="role" class="form-select" th:field="*{role}" required
+                            th:disabled="${usuario.username != null and usuario.username == usuarioAtual}">
                         <option value="" disabled>Selecione um perfil</option>
-                        <option value="ADMIN">ADMIN</option>
-                        <option value="USER">USER</option>
+                        <option value="ADMIN">ADMIN — administra usuários e vê auditoria</option>
+                        <option value="GERENTE">GERENTE — pedidos, descontos, cancelamentos</option>
+                        <option value="ATENDENTE">ATENDENTE — clientes e registro de pedidos</option>
                     </select>
+                    <small class="text-muted"
+                           th:if="${usuario.username != null and usuario.username == usuarioAtual}">
+                        Você não pode alterar o seu próprio perfil.
+                    </small>
                 </div>
 
                 <!-- Botões -->

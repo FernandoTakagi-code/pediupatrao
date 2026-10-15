@@ -1,41 +1,49 @@
 package com.umc.pediupatrao.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.umc.pediupatrao.entity.Cliente;
 import com.umc.pediupatrao.entity.Pedido;
 import com.umc.pediupatrao.entity.Produto;
 import com.umc.pediupatrao.entity.Usuario;
+import com.umc.pediupatrao.exception.RegraNegocioException;
 import com.umc.pediupatrao.service.ClienteService;
 import com.umc.pediupatrao.service.PedidoService;
 import com.umc.pediupatrao.service.ProdutoService;
 import com.umc.pediupatrao.service.UsuarioService;
+import java.util.ArrayList;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * Controlador das telas (Thymeleaf). As regras de negócio ficam nos serviços; aqui as
+ * violações (RegraNegocioException) viram mensagens de erro para o usuário. O acesso por
+ * perfil é imposto pelo SecurityConfig, e não por esta classe nem pelo HTML.
+ */
 @Controller
 public class HomeController {
 
     private static final Logger log = LoggerFactory.getLogger(HomeController.class);
 
-    @Autowired
-    private PedidoService pedidoService;
+    private final PedidoService pedidoService;
+    private final ClienteService clienteService;
+    private final ProdutoService produtoService;
+    private final UsuarioService usuarioService;
 
-    @Autowired
-    private ClienteService clienteService;
-
-    @Autowired
-    private ProdutoService produtoService;
-
-    @Autowired
-    private UsuarioService usuarioService;
+    public HomeController(PedidoService pedidoService, ClienteService clienteService,
+                          ProdutoService produtoService, UsuarioService usuarioService) {
+        this.pedidoService = pedidoService;
+        this.clienteService = clienteService;
+        this.produtoService = produtoService;
+        this.usuarioService = usuarioService;
+    }
 
     @GetMapping("/login")
     public String login() {
@@ -49,14 +57,14 @@ public class HomeController {
     }
 
     // ========================
-    // USUÁRIOS
+    // USUÁRIOS (somente ADMIN)
     // ========================
     @GetMapping("/usuarios")
     public String listarUsuarios(Model model) {
-        List<Usuario> usuarios = (List<Usuario>) usuarioService.listarTodos();
+        List<Usuario> usuarios = new ArrayList<>();
+        usuarioService.listarTodos().forEach(usuarios::add);
         model.addAttribute("usuarios", usuarios);
         model.addAttribute("content", "usuarios/lista :: content");
-        log.info("Carregando fragmento: usuarios/lista :: content");
         return "layout";
     }
 
@@ -69,8 +77,9 @@ public class HomeController {
 
     @GetMapping("/usuarios/editar/{id}")
     public String editarUsuarioForm(@PathVariable String id, Model model,
-            RedirectAttributes redirectAttributes) {
+                                    RedirectAttributes redirectAttributes) {
         boolean encontrado = usuarioService.buscarPorId(id).map(u -> {
+            u.setPassword(null); // nunca envia o hash ao formulário
             model.addAttribute("usuario", u);
             return true;
         }).orElse(false);
@@ -85,27 +94,36 @@ public class HomeController {
     }
 
     @PostMapping("/usuarios/salvar")
-    public String salvarUsuario(@ModelAttribute Usuario usuario,
-            RedirectAttributes redirectAttributes) {
-        usuarioService.salvarUsuario(usuario);
-        redirectAttributes.addFlashAttribute("sucesso", "Usuário criado com sucesso!");
+    public String salvarUsuario(@ModelAttribute Usuario usuario, RedirectAttributes redirectAttributes) {
+        try {
+            usuarioService.salvarUsuario(usuario);
+            redirectAttributes.addFlashAttribute("sucesso", "Usuário criado com sucesso!");
+        } catch (RegraNegocioException e) {
+            redirectAttributes.addFlashAttribute("erro", e.getMessage());
+        }
         return "redirect:/usuarios";
     }
 
     @PostMapping("/usuarios/editar/{id}")
-    public String atualizarUsuario(@PathVariable String id,
-            @ModelAttribute Usuario usuario,
-            RedirectAttributes redirectAttributes) {
-        usuarioService.atualizarUsuario(id, usuario);
-        redirectAttributes.addFlashAttribute("sucesso", "Usuário atualizado com sucesso!");
+    public String atualizarUsuario(@PathVariable String id, @ModelAttribute Usuario usuario,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            usuarioService.atualizarUsuario(id, usuario);
+            redirectAttributes.addFlashAttribute("sucesso", "Usuário atualizado com sucesso!");
+        } catch (RegraNegocioException e) {
+            redirectAttributes.addFlashAttribute("erro", e.getMessage());
+        }
         return "redirect:/usuarios";
     }
 
     @PostMapping("/usuarios/deletar/{id}")
-    public String deletarUsuario(@PathVariable String id,
-            RedirectAttributes redirectAttributes) {
-        usuarioService.deletarUsuario(id);
-        redirectAttributes.addFlashAttribute("sucesso", "Usuário removido com sucesso!");
+    public String deletarUsuario(@PathVariable String id, RedirectAttributes redirectAttributes) {
+        try {
+            usuarioService.deletarUsuario(id);
+            redirectAttributes.addFlashAttribute("sucesso", "Usuário removido com sucesso!");
+        } catch (RegraNegocioException e) {
+            redirectAttributes.addFlashAttribute("erro", e.getMessage());
+        }
         return "redirect:/usuarios";
     }
 
@@ -117,7 +135,6 @@ public class HomeController {
         List<Pedido> pedidos = pedidoService.listarPedidos();
         model.addAttribute("pedidos", pedidos);
         model.addAttribute("content", "pedidos :: content");
-        log.info("Carregando fragmento: pedidos :: content");
         return "layout";
     }
 
@@ -129,7 +146,6 @@ public class HomeController {
         List<Produto> produtos = produtoService.listarProdutos();
         model.addAttribute("produtos", produtos);
         model.addAttribute("content", "produtos/lista :: content");
-        log.info("Carregando fragmento: produtos/lista :: content");
         return "layout";
     }
 
@@ -141,7 +157,6 @@ public class HomeController {
         List<Cliente> clientes = clienteService.listarClientes();
         model.addAttribute("clientes", clientes);
         model.addAttribute("content", "clientes/lista :: content");
-        log.info("Carregando fragmento: clientes/lista :: content");
         return "layout";
     }
 
@@ -153,16 +168,20 @@ public class HomeController {
     }
 
     @PostMapping("/clientes/salvar")
-    public String salvarCliente(@ModelAttribute Cliente cliente,
-            RedirectAttributes redirectAttributes) {
-        clienteService.salvar(cliente);
-        redirectAttributes.addFlashAttribute("sucesso", "Cliente criado com sucesso!");
+    public String salvarCliente(@ModelAttribute Cliente cliente, RedirectAttributes redirectAttributes) {
+        try {
+            cliente.setId(null);
+            clienteService.salvar(cliente);
+            redirectAttributes.addFlashAttribute("sucesso", "Cliente criado com sucesso!");
+        } catch (RegraNegocioException e) {
+            redirectAttributes.addFlashAttribute("erro", e.getMessage());
+        }
         return "redirect:/clientes";
     }
 
     @GetMapping("/clientes/editar/{id}")
     public String editarClienteForm(@PathVariable String id, Model model,
-            RedirectAttributes redirectAttributes) {
+                                    RedirectAttributes redirectAttributes) {
         boolean encontrado = clienteService.buscarPorId(id).map(c -> {
             model.addAttribute("cliente", c);
             return true;
@@ -178,12 +197,15 @@ public class HomeController {
     }
 
     @PostMapping("/clientes/editar/{id}")
-    public String atualizarCliente(@PathVariable String id,
-            @ModelAttribute Cliente cliente,
-            RedirectAttributes redirectAttributes) {
-        cliente.setId(id);
-        clienteService.salvar(cliente);
-        redirectAttributes.addFlashAttribute("sucesso", "Cliente atualizado com sucesso!");
+    public String atualizarCliente(@PathVariable String id, @ModelAttribute Cliente cliente,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            cliente.setId(id);
+            clienteService.salvar(cliente);
+            redirectAttributes.addFlashAttribute("sucesso", "Cliente atualizado com sucesso!");
+        } catch (RegraNegocioException e) {
+            redirectAttributes.addFlashAttribute("erro", e.getMessage());
+        }
         return "redirect:/clientes";
     }
 
@@ -194,11 +216,6 @@ public class HomeController {
     public String configuracoes(Model model) {
         model.addAttribute("content", "configuracoes :: content");
         return "layout";
-    }
-
-    @GetMapping("/teste")
-    public String teste() {
-        return "teste";
     }
 
     @GetMapping("/admin")
