@@ -100,6 +100,11 @@ public class SecurityConfig {
                         .hasAnyRole(ADMIN, GERENTE)
                         .requestMatchers("/api/auditoria", "/api/auditoria/**", "/auditoria", "/auditoria/**").denyAll()
 
+                        // Dashboard administrativo: somente leitura e perfis de gestão.
+                        .requestMatchers(HttpMethod.GET, "/api/dashboard", "/api/dashboard/**", "/dashboard")
+                        .hasAnyRole(ADMIN, GERENTE)
+                        .requestMatchers("/api/dashboard", "/api/dashboard/**", "/dashboard", "/dashboard/**").denyAll()
+
                         // pedidos - operações exclusivas do GERENTE
                         .requestMatchers(HttpMethod.PUT, "/api/pedidos/*/status").hasRole(GERENTE)
                         .requestMatchers(HttpMethod.POST, "/api/pedidos/*/desconto", "/api/pedidos/*/cancelamento").hasRole(GERENTE)
