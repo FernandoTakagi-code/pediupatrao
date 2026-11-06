@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<body>
+<section th:fragment="content" id="dashboard" class="dashboard" aria-labelledby="dashboard-title">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <header class="dashboard-heading">
+        <div><h1 id="dashboard-title">Dashboard administrativo</h1><p>Acompanhe as vendas e o ritmo da sua operação.</p></div>
+        <a th:href="@{/pedidos}" class="btn btn-outline-secondary">Ver pedidos</a>
+    </header>
+    <form id="dashboard-filters" class="dashboard-filters">
+        <div><label for="inicio">Data inicial</label><input id="inicio" name="inicio" type="date" required></div>
+        <div><label for="fim">Data final</label><input id="fim" name="fim" type="date" required></div>
+        <div><label for="status">Situação</label><select id="status" name="status">
+            <option value="">Todas as situações</option>
+            <option th:each="s : ${T(com.umc.pediupatrao.entity.StatusPedido).values()}" th:value="${s}" th:text="${s.descricao}"></option>
+        </select></div>
+        <div><label for="agrupamento">Agrupar vendas</label><select id="agrupamento" name="agrupamento"><option value="DIA">Por dia</option><option value="MES">Por mês</option></select></div>
+        <div><label for="limite">Ranking</label><select id="limite" name="limite"><option value="5">Top 5</option><option value="10">Top 10</option><option value="20">Top 20</option></select></div>
+        <button class="btn btn-primary" type="submit">Aplicar filtros</button>
+    </form>
+    <div class="dashboard-toolbar">
+        <button id="dashboard-refresh" type="button" class="btn btn-outline-secondary btn-sm">Atualizar agora</button>
+        <label><input id="dashboard-auto" type="checkbox"> Atualizar a cada 60 segundos</label>
+        <span id="dashboard-updated"></span>
+    </div>
+    <p class="dashboard-note">Período pela data de entrada do pedido, no fuso do estabelecimento. Vendas e ranking consideram apenas finalizados; faturamento e ticket incluem descontos. Máximo: 366 dias.</p>
+    <p id="dashboard-message" role="status" aria-live="polite">Carregando indicadores…</p>
+    <p id="dashboard-warning" class="alert alert-warning" hidden></p>
+    <div id="dashboard-results" hidden>
+        <div class="dashboard-metrics" aria-label="Indicadores de vendas">
+            <article><h2>Faturamento líquido</h2><strong id="metric-revenue"></strong><p>Vendas finalizadas válidas</p></article>
+            <article><h2>Pedidos no período</h2><strong id="metric-orders"></strong><p id="metric-completed"></p></article>
+            <article><h2>Ticket médio</h2><strong id="metric-ticket"></strong><p>Por venda finalizada válida</p></article>
+            <article><h2>Em andamento</h2><strong id="metric-active"></strong><p id="metric-canceled"></p></article>
+        </div>
+        <div class="dashboard-panels">
+            <section class="dashboard-panel"><h2>Evolução das vendas</h2><p>Faturamento líquido por período</p>
+                <div id="sales-chart" class="sales-chart" role="img" aria-label="Gráfico de faturamento. Valores disponíveis na tabela abaixo."></div>
+                <details><summary>Consultar valores do gráfico</summary><div class="dashboard-table"><table><thead><tr><th scope="col">Período</th><th scope="col">Vendas</th><th scope="col">Faturamento</th></tr></thead><tbody id="sales-table"></tbody></table></div></details>
+            </section>
+            <section class="dashboard-panel"><h2>Situação dos pedidos</h2><p>Quantidade em cada etapa da operação</p><ul id="status-chart" class="status-chart"></ul></section>
+        </div>
+        <section class="dashboard-panel dashboard-ranking"><h2>Produtos mais vendidos</h2><p>Quantidade de unidades em vendas finalizadas válidas. O nome foi registrado no pedido.</p>
+            <p id="ranking-empty" hidden>Nenhum produto vendido neste período.</p>
+            <div class="dashboard-table"><table><thead><tr><th scope="col">Posição</th><th scope="col">Produto</th><th scope="col">Unidades</th></tr></thead><tbody id="products-table"></tbody></table></div>
+        </section>
+    </div>
+    <noscript><p class="alert alert-warning">Ative o JavaScript para consultar o dashboard.</p></noscript>
+    <script th:src="@{/js/dashboard.js}" defer></script>
+</section>
+</body></html>
