@@ -3,6 +3,20 @@
 Evolução do sistema PediuPatrão (Atividade Prática M1 – Engenharia de Software).
 **Tecnologias:** Java 21, Spring Boot 3.4, Spring Security, MongoDB e Thymeleaf.
 
+## Dashboard administrativo
+
+Acesse `/dashboard` com perfil **ADMIN** ou **GERENTE**, ou use o menu **Dashboard**.
+O painel reúne faturamento líquido, ticket médio, pedidos, gráficos de vendas e situações,
+ranking de produtos, filtros por período/status e atualização manual ou a cada 60 segundos.
+Vendas consideram pedidos finalizados e os descontos registrados no sistema.
+
+- [Requisitos, decisões, endpoints e instruções de teste](docs/dashboard.md)
+- [Evidências dos testes](docs/evidencias/testes.txt)
+- [Vídeo de apresentação (84 segundos)](docs/apresentacao-dashboard.mp4)
+- [Roteiro da apresentação](docs/apresentacao.md)
+
+Branch da implementação: `feat/dashboard-administrativo`. Commits por etapa, sem push automático.
+
 ## Como executar
 
 **Pré-requisitos:** JDK 21, MongoDB Community Server rodando em `localhost:27017` e IntelliJ IDEA (ou Maven).

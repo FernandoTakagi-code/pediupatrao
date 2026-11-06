@@ -1,0 +1,33 @@
+Pediu Patrão — validação do dashboard
+Data: 06/11/2026 — America/Sao_Paulo
+Ambiente: Java 21, Maven Wrapper 3.9.9, MongoDB local
+Comando: MONGODB_INTEGRATION=true; .\mvnw.cmd verify -q
+Resultado: BUILD SUCCESS (código de saída 0); 65 testes, 0 falhas, 0 erros, 0 ignorados.
+
+
+Suite                                                        Tests Failures Errors Skipped
+-----                                                        ----- -------- ------ -------
+com.umc.pediupatrao.security.DashboardHttpTest                   3        0      0       0
+com.umc.pediupatrao.security.PedidoServiceMethodSecurityTest     3        0      0       0
+com.umc.pediupatrao.security.SecurityRulesTest                  13        0      0       0
+com.umc.pediupatrao.service.AuditoriaServiceTest                 3        0      0       0
+com.umc.pediupatrao.service.ClienteServiceTest                   7        0      0       0
+com.umc.pediupatrao.service.DashboardMongoIntegrationTest        2        0      0       0
+com.umc.pediupatrao.service.DashboardServiceTest                 6        0      0       0
+com.umc.pediupatrao.service.PedidoServiceTest                   18        0      0       0
+com.umc.pediupatrao.service.UsuarioDetailsServiceTest            3        0      0       0
+com.umc.pediupatrao.service.UsuarioServiceTest                   7        0      0       0
+
+
+Verificações adicionais no navegador:
+- Login de GERENTE e menu Dashboard.
+- Seis pedidos fictícios: receita 281,50; ticket 93,83; 3 vendas; 1 cancelado; 2 em andamento.
+- Filtro CANCELADO: 1 pedido e receita zero.
+- Agrupamento mensal e tabela com os mesmos totais.
+- Período invertido: mensagem 400 e resultados anteriores ocultos.
+- Layout móvel 390 x 844: clientWidth=390 e scrollWidth=390.
+- Atualização automática: horário mudou de 13:40:45 para 13:43:45 sem ação manual.
+- Console sem erros JavaScript durante os fluxos normais.
+- Verificação de sintaxe: node --check src/main/resources/static/js/dashboard.js (saída 0).
+- Vídeo: MP4 H.264, 1920x1080, 24fps, duração 84 segundos, sem áudio.
+- Servidor encerrado: mensagem de falha de conexão em português e resultados anteriores ocultos.
