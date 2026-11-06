@@ -1,0 +1,221 @@
+{
+  "inicio": "2026-10-08",
+  "fim": "2026-11-06",
+  "agrupamento": "DIA",
+  "atualizadoEm": "2026-11-06T13:36:54.107679",
+  "indicadores": {
+    "pedidos": 6,
+    "vendasConcluidas": 3,
+    "faturamento": 281.5,
+    "ticketMedio": 93.83,
+    "cancelados": 1,
+    "emAndamento": 2
+  },
+  "vendas": [
+    {
+      "periodo": "2026-10-08",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-09",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-10",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-11",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-12",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-13",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-14",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-15",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-16",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-17",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-18",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-19",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-20",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-21",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-22",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-23",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-24",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-25",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-26",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-27",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-28",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-29",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-30",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-10-31",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-11-01",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-11-02",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-11-03",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-11-04",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-11-05",
+      "quantidade": 0,
+      "faturamento": 0.0
+    },
+    {
+      "periodo": "2026-11-06",
+      "quantidade": 3,
+      "faturamento": 281.5
+    }
+  ],
+  "situacoes": [
+    {
+      "status": "RECEBIDO",
+      "descricao": "Recebido",
+      "quantidade": 1
+    },
+    {
+      "status": "EM_PREPARACAO",
+      "descricao": "Em preparação",
+      "quantidade": 1
+    },
+    {
+      "status": "PRONTO",
+      "descricao": "Pronto",
+      "quantidade": 0
+    },
+    {
+      "status": "SAIU_PARA_ENTREGA",
+      "descricao": "Saiu para entrega",
+      "quantidade": 0
+    },
+    {
+      "status": "RETIRADO",
+      "descricao": "Retirado",
+      "quantidade": 0
+    },
+    {
+      "status": "FINALIZADO",
+      "descricao": "Finalizado",
+      "quantidade": 3
+    },
+    {
+      "status": "CANCELADO",
+      "descricao": "Cancelado",
+      "quantidade": 1
+    }
+  ],
+  "produtos": [
+    {
+      "produtoId": "6aee01d0c769916031a287ab",
+      "nome": "Pizza Quatro Queijos",
+      "quantidade": 3
+    },
+    {
+      "produtoId": "6aee01d0c769916031a287aa",
+      "nome": "Pizza Margherita",
+      "quantidade": 2
+    },
+    {
+      "produtoId": "6aee01d0c769916031a287a9",
+      "nome": "Pizza Calabresa",
+      "quantidade": 1
+    }
+  ],
+  "pedidosInconsistentes": 0
+}
