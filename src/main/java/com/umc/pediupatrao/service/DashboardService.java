@@ -70,7 +70,8 @@ public class DashboardService {
             serie.put(dia, new Venda(dia, anterior.quantidade() + 1,
                     dinheiro(anterior.faturamento().add(p.getValorTotal()))));
             boolean itemInvalido = false;
-            for (ItemPedido item : p.getItens()) {
+            List<ItemPedido> itens = p.getItens() == null ? List.of() : p.getItens();
+            for (ItemPedido item : itens) {
                 if (item == null || item.getProdutoId() == null || item.getProdutoId().isBlank()
                         || item.getQuantidade() <= 0) {
                     itemInvalido = true;
@@ -81,7 +82,7 @@ public class DashboardService {
                         (a, b) -> new ProdutoVendido(a.produtoId(),
                                 a.nome().compareTo(b.nome()) <= 0 ? a.nome() : b.nome(), a.quantidade() + b.quantidade()));
             }
-            if (itemInvalido || p.getItens().isEmpty()) inconsistentes++;
+            if (itemInvalido || itens.isEmpty()) inconsistentes++;
         }
         long cancelados = situacoes.getOrDefault(StatusPedido.CANCELADO, 0L);
         long finalizados = situacoes.getOrDefault(StatusPedido.FINALIZADO, 0L);

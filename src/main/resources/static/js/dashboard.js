@@ -32,13 +32,15 @@
         chart.style.gap = data.vendas.length > 90 ? '0' : '4px';
         const table = byId('sales-table');
         chart.replaceChildren(); table.replaceChildren();
+        const labelStep = Math.ceil(data.vendas.length / 8);
         data.vendas.forEach((v, index) => {
             const column = document.createElement('div'); column.className = 'sales-column';
             column.title = `${date(v.periodo)}: ${money.format(v.faturamento)} · ${v.quantidade} vendas`;
             const bar = document.createElement('div'); bar.className = 'sales-bar';
             bar.style.height = `${v.faturamento / maximum * 175}px`;
             const label = document.createElement('span');
-            if (index % Math.ceil(data.vendas.length / 8) === 0 || index === data.vendas.length - 1) {
+            if (index === data.vendas.length - 1 || (index % labelStep === 0
+                    && (index === 0 || index < data.vendas.length - labelStep))) {
                 label.textContent = data.agrupamento === 'MES' ? v.periodo.slice(0, 7).split('-').reverse().join('/') : date(v.periodo).slice(0, 5);
             }
             column.append(bar, label); chart.append(column);
@@ -92,7 +94,11 @@
             byId('dashboard-results').hidden = true;
             byId('dashboard-warning').hidden = true;
             text('dashboard-updated', 'Dados indisponíveis');
-            text('dashboard-message', error.name === 'AbortError' ? 'A consulta demorou demais. Tente atualizar novamente.' : error.message);
+            text('dashboard-message', error.name === 'AbortError'
+                ? 'A consulta demorou demais. Tente atualizar novamente.'
+                : error instanceof TypeError
+                    ? 'Falha de conexão. Verifique se o servidor está disponível e tente atualizar novamente.'
+                    : error.message);
             byId('dashboard-message').setAttribute('role', 'alert');
         } finally {
             clearTimeout(timeout);
