@@ -12,7 +12,6 @@ Vendas consideram pedidos finalizados e os descontos registrados no sistema.
 
 - [Requisitos, decisões, endpoints e instruções de teste](docs/dashboard.md)
 - [Evidências dos testes](docs/evidencias/testes.txt)
-- [Vídeo de apresentação (84 segundos)](docs/apresentacao-dashboard.mp4)
 - [Roteiro da apresentação](docs/apresentacao.md)
 
 Branch da implementação: `feat/dashboard-administrativo`. Commits por etapa, sem push automático.

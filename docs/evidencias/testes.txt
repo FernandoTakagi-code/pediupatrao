@@ -29,5 +29,4 @@ Verificações adicionais no navegador:
 - Atualização automática: horário mudou de 13:40:45 para 13:43:45 sem ação manual.
 - Console sem erros JavaScript durante os fluxos normais.
 - Verificação de sintaxe: node --check src/main/resources/static/js/dashboard.js (saída 0).
-- Vídeo: MP4 H.264, 1920x1080, 24fps, duração 84 segundos, sem áudio.
 - Servidor encerrado: mensagem de falha de conexão em português e resultados anteriores ocultos.

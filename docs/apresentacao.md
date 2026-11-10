@@ -1,6 +1,6 @@
 # Apresentação do dashboard
 
-O arquivo `apresentacao-dashboard.mp4` é uma apresentação legendada, sem narração, feita com capturas reais do dashboard. Duração planejada: 84 segundos (7 cenas de 12 segundos), abaixo do limite de três minutos. Os dados são fictícios, criados pelas APIs do sistema em banco de validação separado.
+Roteiro de apoio para uma gravação própria com narração, com duração máxima de três minutos. Os dados usados na demonstração devem ser fictícios.
 
 ## Roteiro para apresentar ou narrar
 

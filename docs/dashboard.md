@@ -158,7 +158,6 @@ Sem a variável, os dois testes que exigem MongoDB real ficam ignorados e os dem
 - [Resposta real da API](evidencias/resposta-api.json), obtida com seis pedidos fictícios em banco separado: três vendas finalizadas, um cancelamento e dois em andamento. Total R$ 281,50 e ticket R$ 93,83.
 - [Dashboard completo](evidencias/dashboard-geral.jpg), [gráficos e ranking](evidencias/dashboard-graficos.jpg), [filtro CANCELADO](evidencias/dashboard-cancelados.jpg), [agrupamento mensal com tabela](evidencias/dashboard-mensal.jpg), [período inválido](evidencias/dashboard-periodo-invalido.jpg), [layout móvel](evidencias/dashboard-mobile.jpg).
 - [Servidor indisponível](evidencias/dashboard-offline.jpg): mensagem de falha de conexão em português e ocultação dos dados anteriores, verificada após encerrar o servidor de validação.
-- [Apresentação em vídeo](apresentacao-dashboard.mp4): demonstração legendada com capturas reais e decisões de análise e projeto, inferior a 3 minutos, sem narração.
 - [Roteiro da apresentação](apresentacao.md).
 
-As capturas usam banco `pediupatrao_dashboard_validacao_20261106`, criado apenas para validação local. Nenhum dado de cliente real foi usado. A documentação e o vídeo estão versionados na branch; a publicação no GitHub permanece pendente porque foi solicitado **não fazer push**. Depois da sua revisão e publicação, envie apenas o link do repositório no Teams.
+As capturas usam banco `pediupatrao_dashboard_validacao_20261106`, criado apenas para validação local. Nenhum dado de cliente real foi usado. O vídeo com narração própria será adicionado após a gravação. Para a entrega no Teams, envie apenas o link do repositório.
