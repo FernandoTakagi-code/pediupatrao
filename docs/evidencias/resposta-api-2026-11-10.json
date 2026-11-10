@@ -1,0 +1,86 @@
+{
+  "inicio": "2026-11-10",
+  "fim": "2026-11-10",
+  "agrupamento": "DIA",
+  "atualizadoEm": "2026-11-10T13:12:20.7388118",
+  "indicadores": {
+    "pedidos": 16,
+    "vendasConcluidas": 9,
+    "faturamento": 678.85,
+    "ticketMedio": 75.43,
+    "cancelados": 2,
+    "emAndamento": 5
+  },
+  "vendas": [
+    {
+      "periodo": "2026-11-10",
+      "quantidade": 9,
+      "faturamento": 678.85
+    }
+  ],
+  "situacoes": [
+    {
+      "status": "RECEBIDO",
+      "descricao": "Recebido",
+      "quantidade": 1
+    },
+    {
+      "status": "EM_PREPARACAO",
+      "descricao": "Em preparação",
+      "quantidade": 1
+    },
+    {
+      "status": "PRONTO",
+      "descricao": "Pronto",
+      "quantidade": 1
+    },
+    {
+      "status": "SAIU_PARA_ENTREGA",
+      "descricao": "Saiu para entrega",
+      "quantidade": 1
+    },
+    {
+      "status": "RETIRADO",
+      "descricao": "Retirado",
+      "quantidade": 1
+    },
+    {
+      "status": "FINALIZADO",
+      "descricao": "Finalizado",
+      "quantidade": 9
+    },
+    {
+      "status": "CANCELADO",
+      "descricao": "Cancelado",
+      "quantidade": 2
+    }
+  ],
+  "produtos": [
+    {
+      "produtoId": "6af33e3436fbf55efff3d8ab",
+      "nome": "Refrigerante 2L",
+      "quantidade": 10
+    },
+    {
+      "produtoId": "6af33e3436fbf55efff3d8a9",
+      "nome": "Pizza Quatro Queijos",
+      "quantidade": 5
+    },
+    {
+      "produtoId": "6af33e3436fbf55efff3d8a7",
+      "nome": "Pizza Calabresa",
+      "quantidade": 4
+    },
+    {
+      "produtoId": "6af33e3436fbf55efff3d8aa",
+      "nome": "Esfiha de Carne",
+      "quantidade": 4
+    },
+    {
+      "produtoId": "6af33e3436fbf55efff3d8a8",
+      "nome": "Pizza Margherita",
+      "quantidade": 3
+    }
+  ],
+  "pedidosInconsistentes": 0
+}

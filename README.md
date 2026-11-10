@@ -12,9 +12,10 @@ Vendas consideram pedidos finalizados e os descontos registrados no sistema.
 
 - [Requisitos, decisões, endpoints e instruções de teste](docs/dashboard.md)
 - [Evidências dos testes](docs/evidencias/testes.txt)
-- [Roteiro da apresentação](docs/apresentacao.md)
+- [Vídeo de apresentação (1min18s)](docs/apresentacao-dashboard.mp4)
+- [Informações da apresentação](docs/apresentacao.md)
 
-Branch da implementação: `feat/dashboard-administrativo`. Commits por etapa, sem push automático.
+Implementação desenvolvida na branch `feat/dashboard-administrativo` e integrada à `main` pelo pull request [#1](https://github.com/FernandoTakagi-code/pediupatrao/pull/1).
 
 ## Como executar
 

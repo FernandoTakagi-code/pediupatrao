@@ -1,19 +1,23 @@
 # Apresentação do dashboard
 
-Roteiro de apoio para uma gravação própria com narração, com duração máxima de três minutos. Os dados usados na demonstração devem ser fictícios.
+[Assistir ou baixar o vídeo](apresentacao-dashboard.mp4).
 
-## Roteiro para apresentar ou narrar
+Gravação fornecida em 10/11/2026. Arquivo MP4, resolução 1280 × 720, duração de aproximadamente 1min18s e faixa de áudio estéreo. A duração está dentro do limite de três minutos da atividade. Caso o GitHub não reproduza o arquivo diretamente, use a opção de download.
 
-| Tempo | Demonstração | Explicação |
-|---|---|---|
-| 00:00–00:12 | Visão geral e indicadores | O responsável acompanha faturamento, volume de pedidos, ticket e operação. Apenas pedidos finalizados geram receita. O total já inclui os descontos. |
-| 00:12–00:24 | Gráficos e produtos mais vendidos | Série de receita por período, distribuição por status e ranking por unidades. Preservamos o nome registrado no pedido, mesmo após alteração do catálogo. |
-| 00:24–00:36 | Filtro de cancelados | O mesmo filtro afeta todo o painel. Cancelados aparecem na operação e não geram faturamento ou ranking. |
-| 00:36–00:48 | Agrupamento mensal e tabela | É possível agrupar por dia ou mês e consultar uma tabela acessível com os valores exatos. Períodos sem vendas aparecem com zero. |
-| 00:48–01:00 | Validação de período | O backend rejeita intervalo invertido, futuro ou maior que 366 dias. A tela informa o problema e oculta resultados anteriores. |
-| 01:00–01:12 | Layout móvel e atualização | Layout responsivo, atualização manual e opção de atualização a cada 60 segundos, pausada em aba oculta. |
-| 01:12–01:24 | Decisões e evidências | Java 21, Spring Boot, MongoDB e Thymeleaf já existentes. API consolidada, BigDecimal, índice por data, ADMIN/GERENTE, 65 testes aprovados incluindo banco real. |
+## Guia para a demonstração
 
-## Preparar uma gravação interativa própria
+Esta sequência serve como apoio para apresentar o projeto; não é uma transcrição nem uma marcação de cenas do vídeo.
 
-Execute a aplicação no IntelliJ, entre como GERENTE, abra Dashboard, mostre os filtros e o botão Atualizar agora. Siga a sequência acima e finalize mostrando `docs/dashboard.md` e o resultado de `MONGODB_INTEGRATION=true` com `mvnw.cmd verify`. Não exponha senhas, documentos pessoais nem dados reais na gravação.
+1. Acesse `/dashboard` com perfil GERENTE e apresente os indicadores gerais.
+2. Mostre os gráficos de faturamento e situação dos pedidos e o ranking de produtos por unidades vendidas.
+3. Consulte 10/11/2026 com situação CANCELADO: dois pedidos, faturamento e ticket zerados. Retorne para todos os status.
+4. Alterne o agrupamento entre DIA e MES e mostre a tabela de valores.
+5. Mostre a atualização manual e a opção automática a cada 60 segundos.
+6. Explique as decisões: reaproveitamento de Java 21/Spring Boot/MongoDB/Thymeleaf, endpoint consolidado `GET /api/dashboard`, regras no servidor, `BigDecimal` para valores monetários e acesso por ADMIN/GERENTE.
+7. Apresente `docs/dashboard.md` e as evidências de testes de 06/11/2026.
+
+## Dados fictícios disponíveis
+
+A carga local de 10/11/2026 possui cinco clientes identificados com o prefixo `Cliente Demo` e 16 pedidos identificados nas observações com `DEMO-APRESENTACAO-20261110-`. Nove estão finalizados, dois cancelados e cinco em andamento, um em cada etapa operacional. Três pedidos finalizados receberam desconto de 10%.
+
+Na validação dessa carga, o faturamento foi R$ 678,85 e o ticket médio R$ 75,43. Todos os pedidos foram criados em 10/11/2026, por isso as vendas ficam concentradas nesse dia no gráfico diário. A carga está no MongoDB local: os dados não são inseridos automaticamente ao clonar o repositório. Veja [o registro da demonstração](evidencias/demonstracao-2026-11-10.md).

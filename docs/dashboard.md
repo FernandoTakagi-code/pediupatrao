@@ -2,7 +2,7 @@
 
 ## Escopo e acesso
 
-Painel integrado ao projeto Java 21 / Spring Boot 3.4.4 / MongoDB / Thymeleaf, disponível em `/dashboard` pelo menu **Dashboard**. ADMIN e GERENTE consultam; ATENDENTE não acessa. O painel não altera pedidos. Branch Gitflow: `feat/dashboard-administrativo`, derivada da `main` existente. Não foi realizado push nem merge.
+Painel integrado ao projeto Java 21 / Spring Boot 3.4.4 / MongoDB / Thymeleaf, disponível em `/dashboard` pelo menu **Dashboard**. ADMIN e GERENTE consultam; ATENDENTE não acessa. O painel não altera pedidos. Branch Gitflow: `feat/dashboard-administrativo`, derivada da `main` existente. Implementação publicada no GitHub e integrada à `main` pelo pull request [#1](https://github.com/FernandoTakagi-code/pediupatrao/pull/1).
 
 ## Requisitos funcionais
 
@@ -158,6 +158,7 @@ Sem a variável, os dois testes que exigem MongoDB real ficam ignorados e os dem
 - [Resposta real da API](evidencias/resposta-api.json), obtida com seis pedidos fictícios em banco separado: três vendas finalizadas, um cancelamento e dois em andamento. Total R$ 281,50 e ticket R$ 93,83.
 - [Dashboard completo](evidencias/dashboard-geral.jpg), [gráficos e ranking](evidencias/dashboard-graficos.jpg), [filtro CANCELADO](evidencias/dashboard-cancelados.jpg), [agrupamento mensal com tabela](evidencias/dashboard-mensal.jpg), [período inválido](evidencias/dashboard-periodo-invalido.jpg), [layout móvel](evidencias/dashboard-mobile.jpg).
 - [Servidor indisponível](evidencias/dashboard-offline.jpg): mensagem de falha de conexão em português e ocultação dos dados anteriores, verificada após encerrar o servidor de validação.
-- [Roteiro da apresentação](apresentacao.md).
+- [Apresentação em vídeo (1min18s)](apresentacao-dashboard.mp4) e [informações da gravação](apresentacao.md).
+- [Dados da demonstração de 10/11/2026](evidencias/demonstracao-2026-11-10.md) e [resposta da API](evidencias/resposta-api-2026-11-10.json).
 
-As capturas usam banco `pediupatrao_dashboard_validacao_20261106`, criado apenas para validação local. Nenhum dado de cliente real foi usado. O vídeo com narração própria será adicionado após a gravação. Para a entrega no Teams, envie apenas o link do repositório.
+As capturas usam banco `pediupatrao_dashboard_validacao_20261106`, criado apenas para validação local. Nenhum dado de cliente real foi usado. A gravação enviada em 10/11/2026 está disponível no link de apresentação acima. Para a entrega no Teams, envie apenas o link do repositório.
